@@ -1,0 +1,69 @@
+/*
+require('connection.php');
+//reister form
+if (isset($_POST['register'])) {
+
+    $userexistquery = "SELECT * FROM `registeruser` WHERE `username`='$_POST[username]' OR `email`='$_POST[email]' ";
+    mysqli_query($con, $userexistquery);
+
+    if ($result) {
+        if (mysqli_num_rows($result) > 0) //it will be executed if username or emial is already taken
+        {
+            //if any user has already taken username or email
+            $resultfetch = mysqli_fetch_assoc($result);
+            if ($resultfetch['username'] == $_POST['username']) {
+                //error for username already registered
+                echo "
+                 <script>
+                 alert(' $resultfetch[username] -Username already taken');
+                 window.location.href='index.php';
+                 </script>
+                ";
+
+            } else {
+                //error for email already registered
+                echo "
+                 <script>
+                 alert(' $resultfetch[email] -email already registered');
+                 window.location.href='index.php';
+                 </script>
+                ";
+            }
+
+        } else {
+            //it will be executed if no one has taken username or email
+            $query = "INSERT INTO `registeruser`(`fullname`, `username`, `email`, `password`) VALUES ('$_POST[fullname],$_POST[username],$_POST[email],$_POST[password]')";
+            if (mysqli_query($con, $query)) {
+                //if data inserted successfully
+                echo "
+                <script>
+                alert('Registration Successfully');
+                window.location.href='index.php';
+                </script>
+                ";
+
+
+            } else {
+                //if data canot be inserted
+                echo "
+                <script>
+                alert('Cannot Run Query');
+                window.location.href='index.php';
+                </script>
+                ";
+
+            }
+
+        }
+    } else {
+        echo "
+       <script>
+       alert('Cannot Run Query');
+       window.location.href='index.php';
+       </script>
+       ";
+    }
+
+}
+
+?>*/

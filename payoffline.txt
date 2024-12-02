@@ -1,0 +1,238 @@
+<?php
+require('admin/inc/dbconfig.php');
+require('admin/inc/essentials.php');
+
+date_default_timezone_set("Asia/kolkata");
+
+session_start();
+
+if (!(isset($_SESSION['login']) && $_SESSION['login'] == true)) {
+    redirect('index.php');
+}
+
+if (isset($_POST['payoffline'])) {
+    $frmdata = filteration($_POST);
+
+    $query1 = "INSERT INTO `bookingorder`( `userid`, `eventid`, `checkin`, `checkout`, `refund`) VALUES (?,?,?,?,?)";
+
+    insert($query1, [$_SESSION['uid'], $_SESSION['event']['id'], $frmdata['checkin'], $frmdata['checkout'], '0'], 'issss');
+
+    $bookingid = mysqli_insert_id($con);
+
+    $query2 = "INSERT INTO `bookingdetails`(`bookingid`, `eventname`, `price`, `totalpay`, `username`, `pnum`, `address`) VALUES (?,?,?,?,?,?,?)";
+
+    insert($query2, [$bookingid, $_SESSION['event']['name'], $_SESSION['event']['price'], $_SESSION['event']['payment'], $frmdata['name'], $frmdata['pnum'], $frmdata['address']], 'issssss');
+
+    // Redirect or show a success message
+    // header("Location: success.php");
+    // exit();
+}
+?>
+
+
+
+<html>
+<head>
+    <title>Processing</title>
+</head>
+<body>
+    <h1>Please do not refresh this page...</h1>
+    <form method="post" action="process_payment.php" name="f1"> <!-- Replace process_payment.php with your processing script -->
+        <input type="hidden" name="param1" value="value1">
+        <input type="hidden" name="param2" value="value2">
+        <input type="hidden" name="param3" value="value3">
+        <!-- Add more hidden input fields as needed for your payment processing -->
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
+
+/////////////////////////////////////////////////////correct code but it show in search bar/////////////////////////
+
+
+<?php
+require('admin/inc/dbconfig.php');
+require('admin/inc/essentials.php');
+
+date_default_timezone_set("Asia/kolkata");
+
+session_start();
+
+if (!(isset($_SESSION['login']) && $_SESSION['login'] == true)) {
+    redirect('index.php');
+}
+
+if (isset($_POST['payoffline'])) {
+    $frmdata = filteration($_POST);
+
+    $query1 = "INSERT INTO `bookingorder`( `userid`, `eventid`, `checkin`, `checkout`, `refund`) VALUES (?,?,?,?,?)";
+
+    insert($query1, [$_SESSION['uid'], $_SESSION['event']['id'], $frmdata['checkin'], $frmdata['checkout'], '0'], 'issss');
+
+    $bookingid = mysqli_insert_id($con);
+
+    $query2 = "INSERT INTO `bookingdetails`(`bookingid`, `eventid`, `eventname`, `price`, `totalpay`, `username`, `pnum`, `address`) VALUES (?,?,?,?,?,?,?,?)";
+
+    insert($query2, [$bookingid, $_SESSION['event']['id'], $_SESSION['event']['name'], $_SESSION['event']['price'], $_SESSION['event']['payment'], $frmdata['name'], $frmdata['pnum'], $frmdata['address']], 'isssssss');
+
+    // Fetch event details here
+    $eventQuery = "SELECT * FROM `event` WHERE `id`=?";
+    $eventResult = select($eventQuery, [$_SESSION['event']['id']], 'i');
+    $eventData = mysqli_fetch_assoc($eventResult);
+
+    // You can use $eventData to display the event details or for further processing
+}
+?>
+
+<html>
+<head>
+    <title>Processing</title>
+</head>
+<body>
+    <h1>Please do not refresh this page...</h1>
+    <!-- Display event details if needed -->
+    <?php if (isset($eventData)) : ?>
+        <h2>Event Details</h2>
+        <p>Name: <?php echo $eventData['name']; ?></p>
+        <p>Date: <?php echo $eventData['date']; ?></p>
+        <!-- Add more event details as needed -->
+    <?php endif; ?>
+    <form method="post" action="process_payment.php" name="f1">
+        <input type="hidden" name="param1" value="value1">
+        <input type="hidden" name="param2" value="value2">
+        <input type="hidden" name="param3" value="value3">
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
+
+
+<?php
+//http://localhost/ETwebsite/payoffline.php?name=NIKHIL&phone=9067260250&address=SHREE+SAI+SHRADDHA+COLONY+SAVANT+NAGAR+BHOSARI+PUNE+39&checkin=2024-04-07&checkout=2024-04-08&payoffline=
+// Get the form data from the URL
+$name = isset($_GET['name']) ? $_GET['name'] : '';
+$phone = isset($_GET['phone']) ? $_GET['phone'] : '';
+$address = isset($_GET['address']) ? $_GET['address'] : '';
+$checkin = isset($_GET['checkin']) ? $_GET['checkin'] : '';
+$checkout = isset($_GET['checkout']) ? $_GET['checkout'] : '';
+
+// Display the data in a table
+?>
+<html>
+<head>
+    <title>Form Data</title>
+</head>
+<body>
+    <h1>Please do not refresh this page...</h1>
+    <h2>Form Data</h2>
+    <table border="1">
+        <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th>Check-in Date</th>
+            <th>Check-out Date</th>
+        </tr>
+        <tr>
+            <td><?php echo $name; ?></td>
+            <td><?php echo $phone; ?></td>
+            <td><?php echo $address; ?></td>
+            <td><?php echo $checkin; ?></td>
+            <td><?php echo $checkout; ?></td>
+        </tr>
+    </table>
+</body>
+</html>
+
+///////////////////////////////////success cart show ///////////////////
+<?php
+require('admin/inc/dbconfig.php');
+require('admin/inc/essentials.php');
+
+date_default_timezone_set("Asia/kolkata");
+
+session_start();
+
+if (!(isset($_SESSION['login']) && $_SESSION['login'] == true)) {
+    redirect('index.php');
+}
+
+if (isset($_POST['payoffline'])) {
+    $frmdata = filteration($_POST);
+
+    $query1 = "INSERT INTO `bookingorder`( `userid`, `eventid`, `checkin`, `checkout`, `refund`) VALUES (?,?,?,?,?)";
+
+    insert($query1, [$_SESSION['uid'], $_SESSION['event']['id'], $frmdata['checkin'], $frmdata['checkout'], '0'], 'issss');
+
+    $bookingid = mysqli_insert_id($con);
+
+    $query2 = "INSERT INTO `bookingdetails`(`bookingid`, `eventid`, `eventname`, `price`, `totalpay`, `username`, `pnum`, `address`) VALUES (?,?,?,?,?,?,?,?)";
+
+    insert($query2, [$bookingid, $_SESSION['event']['id'], $_SESSION['event']['name'], $_SESSION['event']['price'], $_SESSION['event']['payment'], $frmdata['name'], $frmdata['pnum'], $frmdata['address']], 'isssssss');
+
+    // Fetch event details here
+    $eventQuery = "SELECT * FROM `event` WHERE `id`=?";
+    $eventResult = select($eventQuery, [$_SESSION['event']['id']], 'i');
+    $eventData = mysqli_fetch_assoc($eventResult);
+
+    // Debugging
+    echo "Event Data: ";
+    var_dump($eventData);
+
+    // You can use $eventData to display the event details or for further processing
+}
+?>
+
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:400,400i,700,900&display=swap" rel="stylesheet">
+  </head>
+    <style>
+      body {
+        text-align: center;
+        padding: 40px 0;
+        background: #EBF0F5;
+      }
+        h1 {
+          color: #88B04B;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-weight: 900;
+          font-size: 40px;
+          margin-bottom: 10px;
+        }
+        p {
+          color: #404F5E;
+          font-family: "Nunito Sans", "Helvetica Neue", sans-serif;
+          font-size:20px;
+          margin: 0;
+        }
+      i {
+        color: #9ABC66;
+        font-size: 100px;
+        line-height: 200px;
+        margin-left:-15px;
+      }
+      .card {
+        background: white;
+        padding: 60px;
+        border-radius: 4px;
+        box-shadow: 0 2px 3px #C8D0D8;
+        display: inline-block;
+        margin: 0 auto;
+      }
+    </style>
+    <body>
+      <div class="card">
+      <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
+        <i class="checkmark">✓</i>
+      </div>
+        <h1>Success</h1> 
+        <p>We received your purchase request;<br/> we'll be in touch shortly!</p>
+      </div>
+    </body>
+</html>
+///////////////////////////////////////////////////////

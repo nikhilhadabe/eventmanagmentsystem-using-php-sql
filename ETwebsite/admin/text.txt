@@ -1,0 +1,299 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*  $eventres = select("SELECT * FROM `event` WHERE `status`=? AND `removed`=?", [1, 0], 'ii');
+                  while ($eventdata = mysqli_fetch_assoc($eventres)) {
+
+                      //getfeature of event
+                  
+                      $feaq = mysqli_query($con, "SELECT f.name FROM `feature` f 
+                        INNER JOIN `eventfeature` rfea ON f.id = rfea.featureid
+                         WHERE rfea.eventid = '$eventdata[id]' ");
+
+                      $featuredata = "";
+                      while ($fearow = mysqli_fetch_assoc($feaq)) {
+                          $featuredata .= " <span class='badge bg-light text-dark mb-1 text-wrap lh-base'>
+                              $fearow[name] </span>";
+
+                      }
+
+                      //getfacility of event
+                      $facq = mysqli_query($con, "SELECT f.name FROM `facility` f
+                          INNER JOIN `eventfacility` rfac ON f.id= rfac.facilityid
+                           WHERE rfac.eventid = '$eventdata[id]'");
+
+                      $facilitydata = "";
+                      while ($facrow = mysqli_fetch_assoc($facq)) {
+                          $facilitydata .= " <span class='badge bg-light text-dark mb-1 text-wrap lh-base'>
+                              $facrow[name] </span>";
+
+                      }
+                      //get THumbnail of image
+                      $eventthumb = EVENT_IMG_PATH . "thumbnail.jpg";
+                      $thumbq = mysqli_query($con, "SELECT * FROM `eventimage`
+                         WHERE `eventid`='$eventdata[id]' AND `thumb`='1' ");
+
+                      if (mysqli_num_rows($thumbq) > 0) {
+                          $thumbres = mysqli_fetch_assoc($thumbq);
+                          $eventthumb = EVENT_IMG_PATH . $thumbres['image'];
+                      }
+
+                      //print event cart*************************************************************************************
+                      echo <<<data
+                          <div class='card mb-4 border-0 shadow'>
+                          <div class="row g-0 p-3 align-items-center">
+                              <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
+                                  <img src="$eventthumb" class="img-fluid rounded">
+                              </div>
+                              <div class="col-md-5 px-lg-3 px-md-3 px-0">
+                                  <h5 class="mb-1">$eventdata[name]</h5>
+                                  <div class="features mb-1">
+                                      <h6 class="mb-1">features</h6>
+                                                                  $featuredata
+                                  </div>
+                                  <div class="facilities mb-1">
+                                      <h6 class="mb-1">Facilities</h6>
+                                                                 $facilitydata
+                                  </div>
+                                  <div class="Venues mb-1">
+                                      <h6 class="mb-1">Venues</h6>
+                                     $eventdata[venue]
+                                  </div>
+                                  <div class="Venues mb-1">
+                                  <h6 class="mb-1">Guest</h6>
+                                 $eventdata[guest]
+                              </div>
+                              </div>
+                              <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
+                                  <h6 class="mb-4"> $eventdata[price]₹</h6>
+                                  <a href="#" class="btn brn-sm w-100 text-white custom-bg  shadow-none mb-2">Book Now</a>
+                                  <a href="eventdetail.php?id=$rowdata[id]" class="btn brn-sm w-100 btn-outline-dark shadow-none">More Details</a>
+                              </div>
+                          </div>
+                      </div>
+                      data;
+
+
+
+
+
+
+
+
+   /*  function togglestatus(id, val) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", "ajax/event.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.onload = function () {
+                if (this.responseText == 1) {
+                    alert('success', 'status toggled');
+                    getevent();
+                } else {
+                    alert('error', 'server down');
+                }
+            }
+            xhr.send('togglestatus=' + id + '&value=' + val);
+        }
+
+*/
+
+
+it is feature facility script
+  <script>
+
+
+        let featureform = document.getElementById('featureform');
+        let facilityform = document.getElementById('facilityform');
+
+        featureform.addEventListener('submit', function (e) {
+            e.preventDefault();
+            addfeature();
+        });
+
+        function addfeature() {
+
+            let data = new FormData();
+            data.append('name', featureform.elements['featurename'].value);
+            data.append('addfeature', '');
+
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+
+            xhr.onload = function () {
+                var myModal = document.getElementById('feature-s');
+                var modal = bootstrap.Modal.getInstance(myModal);
+                modal.hide();
+
+                if (this.responseText == 1) {
+                    alert('success', 'new feature added!');
+                    featureform.elements['featurename'].value = '';
+                    getfeatures();
+
+                }
+                else {
+                    alert('error', 'Server Down!');
+                }
+            }
+            xhr.send(data);
+
+        }
+
+
+        function getfeatures() {
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                document.getElementById('featuredata').innerHTML = this.responseText;
+
+            }
+
+            xhr.send('getfeatures');
+
+        }
+
+
+
+        function remfeature(val) {
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                if (this.responseText == 1) {
+                    alert('success', 'feature removed!')
+                    getfeatures();
+                }
+                else if (this.responseText == 'eventadded') {
+                    alert('error', 'Feature is added in room!');
+
+                }
+                else {
+                    alert('error', 'Server Down');
+                }
+
+            }
+            xhr.send('remfeature=' + val);
+
+
+        }
+
+
+
+        //facility script
+
+
+
+        facilityform.addEventListener('submit', function (e) {
+            e.preventDefault();
+            addfacility();
+        });
+
+        function addfacility() {
+
+            let data = new FormData();
+            data.append('name', facilityform.elements['facilityname'].value);
+            data.append('icon', facilityform.elements['facilityicon'].files[0]);
+            data.append('desc', facilityform.elements['facilitydesc'].value);
+            data.append('addfacility', '');
+
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+
+            xhr.onload = function () {
+                var myModal = document.getElementById('facility-s');
+                var modal = bootstrap.Modal.getInstance(myModal);
+                modal.hide();
+                if (this.responseText == 'inv_img') {
+                    alert('error', 'Only svg  images are allowed!');
+                }
+                else if (this.responseText == 'inv_size') {
+                    alert('error', 'Image should be less than 2mb!');
+                }
+                else if (this.responseText == 'upd_failed') {
+                    alert('error', 'Image upload failed Server Down!');
+                }
+                else {
+                    alert('success', 'new facility added!');
+                   facilityform.reset();
+                    getfacility();
+                }
+            }
+            xhr.send(data);
+
+        }
+
+
+        function getfacility() {
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                document.getElementById('facilitydata').innerHTML = this.responseText;
+
+            }
+
+            xhr.send('getfacility');
+
+        }
+
+
+
+        function remfacility(val) {
+
+            let xhr = new XMLHttpRequest(); //it is object
+            xhr.open("POST", "ajax/featurefacility.php", true);
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+            xhr.onload = function () {
+                if (this.responseText == 1) {
+                    alert('success', 'facilityremoved!')
+                    getfacility();
+                }
+                else if (this.responseText == 'eventadded') {
+                    alert('error', 'Feature is added in event!');
+
+                }
+                else {
+                    alert('error', 'Server Down');
+                }
+
+            }
+            xhr.send('remfacility=' + val);
+
+
+        }
+
+        
+
+        window.onload = function () {
+            getfeatures();
+            getfacility();
+        }
+
+
+    </script>
+    -->

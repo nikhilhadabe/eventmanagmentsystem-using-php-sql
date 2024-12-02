@@ -1,0 +1,759 @@
+<!--Events Cart -->
+    <h2 class="mt-5 pt-4 mb-4 text-center fw-bold h-font">Events </h2>
+
+    <div class="container">
+        <div class="row">
+            <?php
+
+           // $rowres = select("SELECT * FROM `event` WHERE `status`=? AND `removed`=? ORDER BY id DESC", [1, 0], 'ii');
+
+            $rowres = select("SELECT * FROM `event` WHERE `status`=? AND `removed`=?", [1, 0], 'ii');
+            while ($eventdata = mysqli_fetch_assoc($rowres)) {
+                //getfeature of event
+            
+                $feaq = mysqli_query($con, "SELECT f.name FROM `feature` f 
+      INNER JOIN `eventfeature` rfea ON f.id = rfea.featureid
+       WHERE rfea.eventid = '$eventdata[id]' ");
+
+                $featuredata = "";
+                while ($fearow = mysqli_fetch_assoc($feaq)) {
+                    $featuredata .= " <span class='badge bg-light text-dark mb-1 text-wrap me-1 mb-1'>
+            $fearow[name] </span>";
+
+                }
+
+                //getfeature of event
+                $facq = mysqli_query($con, "SELECT f.name FROM `facility` f
+        INNER JOIN `eventfacility` rfac ON f.id= rfac.facilityid
+         WHERE rfac.eventid = '$eventdata[id]'");
+
+                $facilitydata = "";
+                while ($facrow = mysqli_fetch_assoc($facq)) {
+                    $facilitydata .= " <span class='badge bg-light text-dark mb-1 text-wrap me-1 mb-1'>
+            $facrow[name] </span>";
+
+                }
+                //get THumbnail of image
+                $eventthumb = EVENT_IMG_PATH . "thumbnail.jpg";
+                $thumbq = mysqli_query($con, "SELECT * FROM `eventimage`
+                WHERE `eventid`='$eventdata[id]' AND `thumb`='1' ");
+
+                if (mysqli_num_rows($thumbq) > 0) {
+                    $thumbres = mysqli_fetch_assoc($thumbq);
+                    $eventthumb = EVENT_IMG_PATH . $thumbres['image'];
+                }
+
+                //print event cart*************************************************************************************
+                echo <<<data
+        <div class='card mb-4 border-0 shadow'>
+        <div class="row g-0 p-3 align-items-center">
+            <div class="col-md-5 mb-lg-0 mb-md-0 mb-3">
+                <img src="$eventthumb" class="img-fluid rounded">
+            </div>
+            <div class="col-md-5 px-lg-3 px-md-3 px-0">
+                <h5 class="mb-1">$eventdata[name]</h5>
+                <div class="features mb-1">
+                    <h6 class="mb-1">features</h6>
+                                                $featuredata
+                </div>
+                <div class="facilities mb-1">
+                    <h6 class="mb-1">Facilities</h6>
+                                               $facilitydata
+                </div>
+                <div class="Venues mb-1">
+                    <h6 class="mb-1">Venues</h6>
+                   $eventdata[venue]
+                </div>
+                <div class="Venues mb-1">
+                <h6 class="mb-1">Guest</h6>
+               $eventdata[guest]
+            </div>
+            </div>
+            <div class="col-md-2 mt-lg-0 mt-md-0 mt-4 text-center">
+                <h6 class="mb-4"> $eventdata[price]₹</h6>
+                <a href="#" class="btn brn-sm w-100 text-white custom-bg  shadow-none mb-2">Book Now</a>
+                <a href="eventdetail.php?id=$eventdata[id]" class="btn brn-sm w-100 btn-outline-dark shadow-none">More Details</a>
+            </div>
+        </div>
+    </div>
+    data;
+
+
+            }
+
+            ?>
+
+           <!-- statically store cart event
+            <div class="col-lg-4 col-md-6 my-3">
+                <div class="card border-0 shadow" style="max-width: 350px; margin:auto;">
+                    <img style="height:250px;" src="images1\img4.jpg" class="card-img-top">
+                    <div class="card-body">
+                        <h5>Simple room name</h5>
+                        <h6 class="mb-4"> 200 price</h6>
+                        <div class="features mb-4">
+                            <h6 class="mb-1">features</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="facilities mb-4">
+                            <h6 class="mb-1">Facilities</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="Venues mb-4">
+                            <h6 class="mb-1">Venues</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="rating mb-4">
+                            <h6 class="mb-1">Rating</h6>
+                            <span class="badge rounded-pill bg-light">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </span>
+
+                        </div>
+                        <div class="d-flex justify-content-evenly mb-2">
+                            <a href="#" class="btn brn-sm text-white custom-bg  shadow-none">Book Now</a>
+                            <a href="#" class="btn brn-sm btn-outline-dark shadow-none">More Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 my-3">
+                <div class="card border-0 shadow" style="max-width: 350px; margin:auto;">
+                    <img style="height:250px;" src="images1\img4.jpg" class="card-img-top">
+                    <div class="card-body">
+                        <h5>Simple room name</h5>
+                        <h6 class="mb-4"> 200 price</h6>
+                        <div class="features mb-4">
+                            <h6 class="mb-1">features</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="facilities mb-4">
+                            <h6 class="mb-1">Facilities</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="Venues mb-4">
+                            <h6 class="mb-1">Venues</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="rating mb-4">
+                            <h6 class="mb-1">Rating</h6>
+                            <span class="badge rounded-pill bg-light">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </span>
+
+                        </div>
+                        <div class="d-flex justify-content-evenly mb-2">
+                            <a href="#" class="btn brn-sm text-white custom-bg  shadow-none">Book Now</a>
+                            <a href="#" class="btn brn-sm btn-outline-dark shadow-none">More Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 my-3">
+                <div class="card border-0 shadow" style="max-width: 350px; margin:auto;">
+                    <img style="height:250px;" src="images1\img4.jpg" class="card-img-top">
+                    <div class="card-body">
+                        <h5>Simple room name</h5>
+                        <h6 class="mb-4"> 200 price</h6>
+                        <div class="features mb-4">
+                            <h6 class="mb-1">features</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="facilities mb-4">
+                            <h6 class="mb-1">Facilities</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="Venues mb-4">
+                            <h6 class="mb-1">Venues</h6>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                wifi
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                tv
+                            </span>
+                            <span class="badge bg-light text-dark mb-3 text-wrap lh-base">
+                                sound
+                            </span>
+                        </div>
+                        <div class="rating mb-4">
+                            <h6 class="mb-1">Rating</h6>
+                            <span class="badge rounded-pill bg-light">
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                            </span>
+
+                        </div>
+                        <div class="d-flex justify-content-evenly mb-2">
+                            <a href="#" class="btn brn-sm text-white custom-bg  shadow-none">Book Now</a>
+                            <a href="#" class="btn brn-sm btn-outline-dark shadow-none">More Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            -->
+
+
+
+            <div class="col-lg-12 text-center mt-5">
+                <a href="events.php" class="btn btn-sm btn-outline-dark rounded-0 fw-bold shadow-none">More Events>></a>
+            </div>
+        </div>
+    </div>
+it is dynamically fetch carts adve
+
+ <!--it is statically store  
+            <div class="col-lg-2 col-md-2 text-center bg-light rounded shadow py-4 my-3">
+                <img class="border-color: dark;"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu-h8Rah2rPKrVNpZh_6CgP5yxCx0e7p35fsVPrcLdYNHrwUXSCBIyXzODQ&s"
+                    width="80px">
+                <h5 class="mt-3">Sound</h5>
+            </div>
+            <div class="col-lg-2 col-md-2 text-center bg-light rounded shadow py-4 my-3">
+                <img class="border-color: dark;"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu-h8Rah2rPKrVNpZh_6CgP5yxCx0e7p35fsVPrcLdYNHrwUXSCBIyXzODQ&s"
+                    width="80px">
+                <h5 class="mt-3">Sound</h5>
+            </div>
+            <div class="col-lg-2 col-md-2 text-center bg-light rounded shadow py-4 my-3">
+                <img class="border-color: dark;"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu-h8Rah2rPKrVNpZh_6CgP5yxCx0e7p35fsVPrcLdYNHrwUXSCBIyXzODQ&s"
+                    width="80px">
+                <h5 class="mt-3">Sound</h5>
+            </div>
+            <div class="col-lg-2 col-md-2 text-center bg-light rounded shadow py-4 my-3">
+                <img class="border-color: dark;"
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTbu-h8Rah2rPKrVNpZh_6CgP5yxCx0e7p35fsVPrcLdYNHrwUXSCBIyXzODQ&s"
+                    width="80px">
+                <h5 class="mt-3">Sound</h5>
+            </div>
+        -->
+Event data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

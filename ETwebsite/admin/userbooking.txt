@@ -1,0 +1,226 @@
+<?php
+require ('inc/essentials.php');
+require ('inc/dbconfig.php');
+adminlogin();
+
+
+
+
+// Fetch all bookings from the database
+$query = "SELECT * FROM `bookings`";
+$result = mysqli_query($GLOBALS['con'], $query);
+
+
+
+if ($result) {
+    // Display the bookings in a table
+    echo "<h2>Booking Details</h2>";
+    echo "<table border='1'>";
+    echo "<tr><th>Name</th><th>Phone Number</th><th>Venue</th><th>Price</th><th>Check-in Date</th><th>Check-out Date</th></tr>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "<tr>";
+        echo "<td>" . $row['name'] . "</td>";
+        echo "<td>" . $row['pnum'] . "</td>";
+        echo "<td>" . $row['venue'] . "</td>";
+        echo "<td>" . $row['price'] . "</td>";
+        echo "<td>" . $row['checkin'] . "</td>";
+        echo "<td>" . $row['checkout'] . "</td>";
+        echo "</tr>";
+    }
+    echo "</table>";
+    mysqli_free_result($result);
+} else {
+    echo "Failed to fetch bookings: " . mysqli_error($con);
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////script
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+    <script>
+        function fetchBookings() {
+            // Make an AJAX request to fetch the bookings data
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'fetch_bookings.php', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var bookings = JSON.parse(xhr.responseText);
+                    var tableBody = document.getElementById('usersbooking');
+                    tableBody.innerHTML = ''; // Clear existing data
+
+                    // Loop through the bookings and add them to the table
+                    bookings.forEach(function (booking) {
+                        var row = '<tr>';
+                        row += '<td>' + booking.srno + '</td>';
+                        row += '<td>' + booking.name + '</td>';
+                        row += '<td>' + booking.pnum + '</td>';
+                        row += '<td>' + booking.venue + '</td>';
+                        row += '<td>' + booking.price + '</td>';
+                        row += '<td>' + booking.checkindate + '</td>';
+                        row += '<td>' + booking.checkoutdate + '</td>';
+                        row += '<td><button onclick="deleteBooking(' + booking.id + ')">Delete</button></td>';
+                        row += '</tr>';
+                        tableBody.innerHTML += row;
+                    });
+                } else {
+                    console.error('Failed to fetch bookings: ' + xhr.statusText);
+                }
+            };
+            xhr.send();
+        }
+
+        window.onload = function () {
+            fetchBookings();
+        };
+
+
+    </script>
+
+    -->
+
+
+
+    /////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////
+                 usersbooking js code correct code
+
+                function fetchBookings() {
+    // Make an AJAX request to fetch the bookings data
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'fetch_bookings.php', true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var bookings = JSON.parse(xhr.responseText);
+            var tableBody = document.getElementById('usersbooking');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            // Loop through the bookings and add them to the table
+            bookings.forEach(function (booking) {
+                var row = '<tr>';
+                row += '<td>' + booking.srno + '</td>';
+                row += '<td>' + booking.name + '</td>';
+                row += '<td>' + booking.pnum + '</td>';
+                row += '<td>' + booking.event + '</td>';
+                row += '<td>' + booking.venue + '</td>';
+                row += '<td>' + booking.price + '</td>';
+                row += '<td>' + booking.checkin + '</td>'; // Assuming the date format is correct in the database
+                row += '<td>' + booking.checkout + '</td>'; // Assuming the date format is correct in the database
+                row += '<td><button onclick="deleteBooking(' + booking.id + ')">Delete</button></td>';
+                row += '</tr>';
+                tableBody.innerHTML += row;
+            });
+        } else {
+            console.error('Failed to fetch bookings: ' + xhr.statusText);
+        }
+    };
+    xhr.send();
+}
+
+window.onload = function () {
+    fetchBookings();
+};
+
+
+
+********************************************************************************
+correct code delete successfully
+
+
+function deleteBooking(id) {
+    if (confirm("Are you sure you want to delete this booking?")) {
+        // Make an AJAX request to delete the booking
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'delete_booking.php', true);
+        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // Booking deleted, refresh the table
+                fetchBookings();
+            } else {
+                console.error('Failed to delete booking: ' + xhr.statusText);
+            }
+        };
+        xhr.send('srno=' + id);
+    }
+}
+
+
+
+ 
+
+function fetchBookings() {
+    // Make an AJAX request to fetch the bookings data
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'fetch_bookings.php', true);
+    xhr.onload = function () {
+        if (xhr.status === 200) {
+            var bookings = JSON.parse(xhr.responseText);
+            var tableBody = document.getElementById('usersbooking');
+            tableBody.innerHTML = ''; // Clear existing data
+
+            // Loop through the bookings and add them to the table
+            bookings.forEach(function (booking) {
+                var row = '<tr>';
+                row += '<td>' + booking.srno + '</td>';
+                row += '<td>' + booking.name + '</td>';
+                row += '<td>' + booking.pnum + '</td>';
+                row += '<td>' + booking.event + '</td>';
+                row += '<td>' + booking.venue + '</td>';
+                row += '<td>' + booking.price + '</td>';
+                row += '<td>' + booking.checkin + '</td>';
+                row += '<td>' + booking.checkout + '</td>';
+              //  row += '<td><button onclick="deleteBooking(' + booking.id + ')">Delete</button></td>';
+               // row += '<td><button onclick="deleteBooking('<?php echo $booking['id']; ?>')">Delete</button></td>';
+              //  row += '<td><i class="bi bi-trash-fill"><button onclick="deleteBooking(' + booking.srno + ')">Delete</button></i></td>';
+             // row += '<td><i class="bi bi-trash-fill"></i><button onclick="deleteBooking(' + booking.srno + ')">Delete</button></td>';
+             row += '<td><i class="bi bi-trash-fill"></i><button onclick="deleteBooking(' + booking.srno + ')" class="btn btn-danger">Delete</button></td>';
+
+
+                row += '</tr>';
+                tableBody.innerHTML += row;
+            });
+        } else {
+            console.error('Failed to fetch bookings: ' + xhr.statusText);
+        }
+    };
+    xhr.send();
+}
+
+window.onload = function () {
+    fetchBookings();
+};
+
